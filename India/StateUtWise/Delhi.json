@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "features": [
+  "features": [  
         {
       "type": "Feature",
       "geometry": {
@@ -730,6 +730,7 @@
         "updated_at": "2015-07-02T08:55:51Z"
       }
     }
-  ]
+  
+]
 
 }
