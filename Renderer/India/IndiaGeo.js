@@ -4,17 +4,15 @@ const height = 800;
 const svg = d3.select(".map-svg");
 const loader = document.querySelector(".loader");
 
-
 const tooltip = d3
   .select("body")
   .append("div")
   .attr("class", "tooltip")
   .style("opacity", 0);
 
-
-async function geojsonData(stateName) {
+async function geojsonData() {
   try {
-    const response = await fetch(`../India/districtWise/${stateName}.json`);
+    const response = await fetch("../../India/India.json");
     if (!response.ok) throw new Error("Network error");
     const data = await response.json();
     return data;
@@ -25,8 +23,8 @@ async function geojsonData(stateName) {
 }
 
 function drawMap(geoData) {
+  console.log(geoData);
   if (!geoData) return;
-
 
   svg.selectAll("*").remove();
 
@@ -42,11 +40,15 @@ function drawMap(geoData) {
     .attr("d", pathGenerator)
     .attr("fill", "#424242")
     .on("mouseover", function (event, d) {
-      const districtName = d.properties.NAME_2;
+      const stateName =
+        d.properties.ST_NM ||
+        d.properties.NAME_1 ||
+        d.properties.name ||
+        "Unknown State";
 
       tooltip
         .style("opacity", 1)
-        .html(`📍 <strong>${districtName}</strong>`)
+        .html(`📍 <strong>${stateName}</strong>`)
         .style("left", event.pageX + 15 + "px")
         .style("top", event.pageY - 25 + "px");
 
@@ -65,17 +67,5 @@ function drawMap(geoData) {
   loader.style.display = "none";
 }
 
-
-const submitBtn = document.querySelector("#submit");
-submitBtn.onclick = async function () {
-  loader.style.display = "block";
-
-  const stateName = document.querySelector("#stateInput").value.trim();
-  if (!stateName) {
-    loader.style.display = "none";
-    return;
-  }
-
-  const data = await geojsonData(stateName);
-  drawMap(data);
-};
+const data = await geojsonData();
+drawMap(data);
